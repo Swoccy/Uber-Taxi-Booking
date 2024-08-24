@@ -43,10 +43,10 @@ class LoginWindow(QWidget):
         loginbox.addWidget(button_login)
         loginbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        layout.addLayout(loginbox,                                              2, 1, 2, 2)
+        layout.addLayout(loginbox,                                              2, 0, 2, 2)
 
         button_register = QPushButton('Register', clicked=self.open_register_window)
-        layout.addWidget(button_register, 2, 3, 2, 1)
+        layout.addWidget(button_register,                                       2, 2, 2, 2)
 
         self.status = QLabel('')
         self.status.setStyleSheet('font-size: 25px; color: red')
