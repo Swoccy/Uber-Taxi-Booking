@@ -155,7 +155,3 @@ if __name__ == '__main__':
         sys.exit(app.exec())
     except SystemExit:
         print('Closing Window...')
-
-
-
-jdbc:sqlite:C:/Users/chadn/PycharmProjects/Taxi_Sys.db
