@@ -1,0 +1,89 @@
+import sys
+from PyQt6.QtWidgets import QApplication, QLineEdit, QPushButton, QWidget, QFormLayout, QMessageBox
+from PyQt6.QtSql import QSqlQuery
+
+
+class RegisterWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Register")
+        self.setFixedSize(600, 400)
+
+        layout = QFormLayout()
+        self.setLayout(layout)
+
+        self.lineEdits = {}
+
+        self.lineEdits['Username'] = QLineEdit()
+        self.lineEdits['Address'] = QLineEdit()
+        self.lineEdits['PNumber'] = QLineEdit()
+        self.lineEdits['Email'] = QLineEdit()
+        self.lineEdits['Password'] = QLineEdit()
+        self.lineEdits['Password'].setEchoMode(QLineEdit.EchoMode.Password)
+        self.lineEdits['CardNo'] = QLineEdit()
+
+        layout.addRow('Username:', self.lineEdits['Username'])
+        layout.addRow('Address:', self.lineEdits['Address'])
+        layout.addRow('Phone Number:', self.lineEdits['PNumber'])
+        layout.addRow('Email:', self.lineEdits['Email'])
+        layout.addRow('Password:', self.lineEdits['Password'])
+        layout.addRow('Card Number:', self.lineEdits['CardNo'])
+
+        button_register = QPushButton('Register', clicked=self.register)
+        layout.addWidget(button_register)
+
+    def register(self):
+        username = self.lineEdits['Username'].text()
+        address = self.lineEdits['Address'].text()
+        pnumber = self.lineEdits['PNumber'].text()
+        email = self.lineEdits['Email'].text()
+        password = self.lineEdits['Password'].text()
+        cardno = self.lineEdits['CardNo'].text()
+
+        if not (username and address and pnumber and email and password and cardno):
+            QMessageBox.warning(self, "Input Error", "All fields must be filled out.")
+            return
+
+        if not pnumber.isdigit() or not cardno.isdigit():
+            QMessageBox.warning(self, "Input Error", "Phone Number and Card Number must be numeric.")
+            return
+
+        self.insert_data(username, address, int(pnumber), email, password, int(cardno))
+
+    def insert_data(self, username, address, pnumber, email, password, cardno):
+        query = QSqlQuery()
+        query.prepare('''
+            INSERT INTO Customer (Username, Address, PNumber, Email, Password, CardNo)
+            VALUES (:username, :address, :pnumber, :email, :password, :cardno)
+        ''')
+        query.bindValue(':username', username)
+        query.bindValue(':address', address)
+        query.bindValue(':pnumber', pnumber)
+        query.bindValue(':email', email)
+        query.bindValue(':password', password)
+        query.bindValue(':cardno', cardno)
+
+        if query.exec():
+            QMessageBox.information(self, "Success", "Registration successful!")
+            self.close()
+        else:
+            QMessageBox.warning(self, "Error", "Failed to register. Please try again.")
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    app.setStyleSheet('''
+        QWidget {
+            font-size: 25px;
+        }
+        QLineEdit {
+            height: 500px;
+        }
+    ''')
+
+    registerWindow = RegisterWindow()
+    registerWindow.show()
+
+    try:
+        sys.exit(app.exec())
+    except SystemExit:
+        print('Closing Window...')

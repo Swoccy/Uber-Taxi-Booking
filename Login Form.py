@@ -57,7 +57,7 @@ class LoginWindow(QWidget):
         Initialize the SQLite database and create the Customer table if it doesn't exist.
         """
         self.db = QSqlDatabase.addDatabase('QSQLITE')
-        self.db.setDatabaseName('Taxi_Sys0.db')
+        self.db.setDatabaseName('Taxi_Sys.db')
 
         if not self.db.open():
             print("Unable to open database")
