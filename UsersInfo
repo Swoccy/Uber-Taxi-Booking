@@ -1,0 +1,412 @@
+--
+-- File generated with SQLiteStudio v3.4.4 on Sat Aug 24 13:04:06 2024
+--
+-- Text encoding used: System
+--
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Table: Booking
+CREATE TABLE IF NOT EXISTS Booking (
+    BookingID   INTEGER PRIMARY KEY AUTOINCREMENT,
+    CustomerNo          REFERENCES Customer (CustomerID),
+    Location    TEXT    NOT NULL,
+    Destination TEXT    NOT NULL,
+    PickUp      TEXT    NOT NULL,
+    Return      TEXT    NOT NULL,
+    Passengers  INTEGER NOT NULL
+);
+
+INSERT INTO Booking (
+                        BookingID,
+                        CustomerNo,
+                        Location,
+                        Destination,
+                        PickUp,
+                        Return,
+                        Passengers
+                    )
+                    VALUES (
+                        1,
+                        1,
+                        '138 Valasquez Road, Sangre Grande',
+                        '47 Carry Road, Couva-Tabaquite-Talparo',
+                        '2024-01-12 / 01:40',
+                        '2024-01-16 / 13:45',
+                        5
+                    );
+
+INSERT INTO Booking (
+                        BookingID,
+                        CustomerNo,
+                        Location,
+                        Destination,
+                        PickUp,
+                        Return,
+                        Passengers
+                    )
+                    VALUES (
+                        2,
+                        2,
+                        '19 Puerto Grande Road, Siparia, Buenos Ayres',
+                        '117 Ankunding Springs, Felicity',
+                        '2024-01-04 / 11:20',
+                        '2024-01-06 / 14:00',
+                        1
+                    );
+
+INSERT INTO Booking (
+                        BookingID,
+                        CustomerNo,
+                        Location,
+                        Destination,
+                        PickUp,
+                        Return,
+                        Passengers
+                    )
+                    VALUES (
+                        3,
+                        3,
+                        '43552 Loyd Streets, Princess Town, Moruga',
+                        '55123 Charlie Place, San Juan-Laventille, Maracas',
+                        '2024-01-02 / 02:40',
+                        '2024-01-02 / 18:20',
+                        2
+                    );
+
+
+-- Table: Customer
+CREATE TABLE IF NOT EXISTS Customer (
+    CustomerID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Username   TEXT    NOT NULL,
+    Address    TEXT    NOT NULL,
+    PNumber    INTEGER UNIQUE
+                       CHECK (length(PNumber) >= 7),
+    Email      TEXT    NOT NULL,
+    Password   TEXT    NOT NULL,
+    CardNo     INTEGER NOT NULL
+);
+
+INSERT INTO Customer (
+                         CustomerID,
+                         Username,
+                         Address,
+                         PNumber,
+                         Email,
+                         Password,
+                         CardNo
+                     )
+                     VALUES (
+                         1,
+                         'Jack',
+                         'Claude Neol Highway, Lowlands',
+                         6311043,
+                         'JackLantern552@gmail.com',
+                         'CanberryJuice',
+-                        9243
+                     );
+
+INSERT INTO Customer (
+                         CustomerID,
+                         Username,
+                         Address,
+                         PNumber,
+                         Email,
+                         Password,
+                         CardNo
+                     )
+                     VALUES (
+                         2,
+                         'Crain',
+                         'Beckles Lane and Eastern Main Road, Arima',
+                         6670032,
+                         'CucckooBirdsSuck1@gmail.com',
+                         'SetItABlaze00',
+-                        8169
+                     );
+
+INSERT INTO Customer (
+                         CustomerID,
+                         Username,
+                         Address,
+                         PNumber,
+                         Email,
+                         Password,
+                         CardNo
+                     )
+                     VALUES (
+                         3,
+                         'Saint',
+                         '84-B Maraval Rd., Port Of Spain',
+                         6622975,
+                         'IamSaintGermain@gmail.com',
+                         'ThisDemonWillPerise',
+-                        9668
+                     );
+
+
+-- Table: Entry
+CREATE TABLE IF NOT EXISTS Entry (
+    EntryNo    INTEGER PRIMARY KEY AUTOINCREMENT,
+    EntryDate  TEXT    NOT NULL,
+    CustomerNo INTEGER REFERENCES Customer (CustomerID),
+    Status     TEXT    REFERENCES Status (Status),
+    Vehicle    TEXT    REFERENCES Vehicle (VehicleNo),
+    Distance   REAL    NOT NULL,
+    Duration   REAL    NOT NULL,
+    UOM        TEXT    REFERENCES UOM (UOM),
+    Cost       REAL    NOT NULL
+);
+
+
+-- Table: Role
+CREATE TABLE IF NOT EXISTS Role (
+    RoleNo INTEGER PRIMARY KEY AUTOINCREMENT,
+    Role   TEXT    NOT NULL
+);
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     1,
+                     'Driver'
+                 );
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     2,
+                     'Pilot'
+                 );
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     3,
+                     'Manager'
+                 );
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     4,
+                     'Clerk'
+                 );
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     5,
+                     'Cleaner'
+                 );
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     6,
+                     'IT Techician'
+                 );
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     7,
+                     'Mechanic'
+                 );
+
+INSERT INTO Role (
+                     RoleNo,
+                     Role
+                 )
+                 VALUES (
+                     8,
+                     'Regualr Employee'
+                 );
+
+
+-- Table: Staff
+CREATE TABLE IF NOT EXISTS Staff (
+    StaffNo  INTEGER PRIMARY KEY AUTOINCREMENT,
+    SFName   TEXT    NOT NULL,
+    SSName   TEXT    NOT NULL,
+    PNumber  INTEGER CHECK (length(PNumber) >= 7) 
+                     NOT NULL,
+    Email    TEXT    NOT NULL,
+    Password TEXT    NOT NULL,
+    Role     TEXT    REFERENCES Role (RoleNo) 
+);
+
+
+-- Table: Status
+CREATE TABLE IF NOT EXISTS Status (
+    Status TEXT PRIMARY KEY
+);
+
+INSERT INTO Status (
+                       Status
+                   )
+                   VALUES (
+                       'Available'
+                   );
+
+INSERT INTO Status (
+                       Status
+                   )
+                   VALUES (
+                       'Completed'
+                   );
+
+INSERT INTO Status (
+                       Status
+                   )
+                   VALUES (
+                       'Cancelled'
+                   );
+
+INSERT INTO Status (
+                       Status
+                   )
+                   VALUES (
+                       'Accpeted'
+                   );
+
+
+-- Table: UOM
+CREATE TABLE IF NOT EXISTS UOM (
+    UOM TEXT PRIMARY KEY
+);
+
+INSERT INTO UOM (
+                    UOM
+                )
+                VALUES (
+                    'Minute(s)'
+                );
+
+INSERT INTO UOM (
+                    UOM
+                )
+                VALUES (
+                    'Hour(s)'
+                );
+
+INSERT INTO UOM (
+                    UOM
+                )
+                VALUES (
+                    'Day(s)'
+                );
+
+
+-- Table: Vehicle
+CREATE TABLE IF NOT EXISTS Vehicle (
+    VehicleNo       INTEGER PRIMARY KEY AUTOINCREMENT,
+    Brand           TEXT    NOT NULL,
+    VehicleType     TEXT    NOT NULL,
+    Colour          TEXT    NOT NULL,
+    NumOfPassengers INTEGER NOT NULL,
+    Capacity        TEXT    NOT NULL
+);
+
+INSERT INTO Vehicle (
+                        VehicleNo,
+                        Brand,
+                        VehicleType,
+                        Colour,
+                        NumOfPassengers,
+                        Capacity
+                    )
+                    VALUES (
+                        1,
+                        'Mercedes Sprinter',
+                        'MiniBus',
+                        'Black',
+                        '1-16',
+                        '16 medium suitcases'
+                    );
+
+INSERT INTO Vehicle (
+                        VehicleNo,
+                        Brand,
+                        VehicleType,
+                        Colour,
+                        NumOfPassengers,
+                        Capacity
+                    )
+                    VALUES (
+                        2,
+                        'Cadillac Escalade',
+                        'First Standard Van',
+                        'Black',
+                        '1-6',
+                        '6 medium suitcases'
+                    );
+
+INSERT INTO Vehicle (
+                        VehicleNo,
+                        Brand,
+                        VehicleType,
+                        Colour,
+                        NumOfPassengers,
+                        Capacity
+                    )
+                    VALUES (
+                        3,
+                        'Ford Custom',
+                        'Standard Van',
+                        'Black',
+                        '1-7',
+                        '7 medium suitcases'
+                    );
+
+INSERT INTO Vehicle (
+                        VehicleNo,
+                        Brand,
+                        VehicleType,
+                        Colour,
+                        NumOfPassengers,
+                        Capacity
+                    )
+                    VALUES (
+                        4,
+                        'Audi A8',
+                        'First Class',
+                        'Black',
+                        '1-3',
+                        '3 medium suitcases'
+                    );
+
+INSERT INTO Vehicle (
+                        VehicleNo,
+                        Brand,
+                        VehicleType,
+                        Colour,
+                        NumOfPassengers,
+                        Capacity
+                    )
+                    VALUES (
+                        5,
+                        'BMW 5 Series',
+                        'Standard Class',
+                        'Black',
+                        '1-3',
+                        '3 medium suitcases'
+                    );
+
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
