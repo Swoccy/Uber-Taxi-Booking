@@ -45,7 +45,7 @@ class LoginWindow(QWidget):
 
         layout.addLayout(loginbox,                                              2, 0, 2, 2)
 
-        button_register = QPushButton('Register', clicked=self.open_register_window)
+        button_register = QPushButton('Register', clicked=self.register_window)
         layout.addWidget(button_register,                                       2, 2, 2, 2)
 
         self.status = QLabel('')
@@ -55,7 +55,7 @@ class LoginWindow(QWidget):
         # Initialize database connection
         self.init_database()
 
-    def open_register_window(self):
+    def register_window(self):
         self.registerWindow = RegisterWindow()
         self.registerWindow.show()
 
@@ -93,7 +93,7 @@ class LoginWindow(QWidget):
         query.bindValue(':pnumber', 6311043)
         query.bindValue(':email', 'JackLantern552@gmail.com')
         query.bindValue(':password', 'CanberryJuice')
-        query.bindValue(':cardno', -9243)
+        query.bindValue(':cardno', 9243)
         query.exec()
 
         query.prepare('''
@@ -105,7 +105,7 @@ class LoginWindow(QWidget):
         query.bindValue(':pnumber', 6670032)
         query.bindValue(':email', 'CucckooBirdsSuck1@gmail.com')
         query.bindValue(':password', 'SetItABlaze00')
-        query.bindValue(':cardno', -8169)
+        query.bindValue(':cardno', 8169)
         query.exec()
 
         query.prepare('''
@@ -117,7 +117,7 @@ class LoginWindow(QWidget):
         query.bindValue(':pnumber', 6622975)
         query.bindValue(':email', 'IamSaintGermain@gmail.com')
         query.bindValue(':password', 'ThisDemonWillPerise')
-        query.bindValue(':cardno', -9668)
+        query.bindValue(':cardno', 9668)
         query.exec()
 
     def checkCredential(self):
