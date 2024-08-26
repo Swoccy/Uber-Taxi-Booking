@@ -221,7 +221,7 @@ class EnterBookingID(QWidget):
 class BookingsWindow(QWidget):
     def __init__(self, username):
         super().__init__()
-        self.username = username  
+        self.username = username
         self.setWindowTitle("Bookings")
         self.resize(500, 400)
 
@@ -341,10 +341,8 @@ class LoginWindow(QWidget):
                 CardNo INTEGER NOT NULL
             )
         ''')
-        query.prepare('''
-                    INSERT OR IGNORE INTO Customer (Username, Address, PNumber, Email, Password, CardNo)
-                    VALUES (:username, :address, :pnumber, :email, :password, :cardno)
-                ''')
+        
+        query.prepare('''INSERT OR IGNORE INTO Customer (Username, Address, PNumber, Email, Password, CardNo) VALUES (:username, :address, :pnumber, :email, :password, :cardno)''')
         query.bindValue(':username', 'Jack')
         query.bindValue(':address', 'Claude Neol Highway, Lowlands')
         query.bindValue(':pnumber', 6311043)
@@ -353,10 +351,7 @@ class LoginWindow(QWidget):
         query.bindValue(':cardno', 9243)
         query.exec()
 
-        query.prepare('''
-                    INSERT OR IGNORE INTO Customer (Username, Address, PNumber, Email, Password, CardNo)
-                    VALUES (:username, :address, :pnumber, :email, :password, :cardno)
-                ''')
+        query.prepare('''INSERT OR IGNORE INTO Customer (Username, Address, PNumber, Email, Password, CardNo) VALUES (:username, :address, :pnumber, :email, :password, :cardno)''')
         query.bindValue(':username', 'Crain')
         query.bindValue(':address', 'Beckles Lane and Eastern Main Road, Arima')
         query.bindValue(':pnumber', 6670032)
@@ -365,10 +360,7 @@ class LoginWindow(QWidget):
         query.bindValue(':cardno', 8169)
         query.exec()
 
-        query.prepare('''
-                    INSERT OR IGNORE INTO Customer (Username, Address, PNumber, Email, Password, CardNo)
-                    VALUES (:username, :address, :pnumber, :email, :password, :cardno)
-                ''')
+        query.prepare('''INSERT OR IGNORE INTO Customer (Username, Address, PNumber, Email, Password, CardNo) VALUES (:username, :address, :pnumber, :email, :password, :cardno)''')
         query.bindValue(':username', 'Saint')
         query.bindValue(':address', '84-B Maraval Rd., Port Of Spain')
         query.bindValue(':pnumber', 6622975)
