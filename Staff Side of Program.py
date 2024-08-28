@@ -4,6 +4,41 @@ from PyQt6.QtWidgets import QApplication, QWidget, QLineEdit, QPushButton, QLabe
 from PyQt6.QtCore import Qt
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 
+class ManagerMainApp(QWidget):
+    def __init__(self, username):
+        super().__init__()
+        self.username = username
+        self.setWindowTitle("Manager Main App")
+        self.resize(600, 400)
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        bookings_list_button = QPushButton('Customer Bookings')
+        bookings_list_button.clicked.connect(self.bookings_list)
+        layout.addWidget(bookings_list_button)
+
+        staff_members_button = QPushButton('Staff Members')
+        staff_members_button.clicked.connect(self.show_staff_members)
+        layout.addWidget(staff_members_button)
+
+        assign_drivers_button = QPushButton('Assign Drivers to Bookings')
+        assign_drivers_button.clicked.connect(self.assign_drivers_to_bookings)
+        layout.addWidget(assign_drivers_button)
+
+    def bookings_list(self):
+        self.bookingsListWindow = BookingsListWindow()
+        self.bookingsListWindow.show()
+
+    def show_staff_members(self):
+        self.staffMembersWindow = StaffMembersWindow()
+        self.staffMembersWindow.show()
+
+    def assign_drivers_to_bookings(self):
+        self.assignDriversWindow = AssignDriversWindow()
+        self.assignDriversWindow.show()
+
+
 
 class StaffMainApp(QWidget):
     def __init__(self, username):
@@ -23,11 +58,11 @@ class StaffMainApp(QWidget):
         staff_members_button.clicked.connect(self.show_staff_members)
         layout.addWidget(staff_members_button)
 
-        assign_staff_button = QPushButton('Assign Staff to Bookings')
-        assign_staff_button.clicked.connect(self.assign_staff_to_bookings)
-        layout.addWidget(assign_staff_button)
+        assign_drivers_button = QPushButton('Assign Drivers to Bookings')
+        assign_drivers_button.clicked.connect(self.assign_drivers_to_bookings)
+        layout.addWidget(assign_drivers_button)
 
-    def bookings_List(self):
+    def bookings_list(self):
         self.bookingsListWindow = BookingsListWindow()
         self.bookingsListWindow.show()
 
@@ -35,9 +70,10 @@ class StaffMainApp(QWidget):
         self.staffMembersWindow = StaffMembersWindow()
         self.staffMembersWindow.show()
 
-    def assign_staff_to_bookings(self):
-        self.assignStaffWindow = AssignStaffWindow()
-        self.assignStaffWindow.show()
+    def assign_drivers_to_bookings(self):
+        self.assignDriversWindow = AssignDriversWindow()
+        self.assignDriversWindow.show()
+
 
 class BookingsListWindow(QWidget):
     def __init__(self):
@@ -54,16 +90,16 @@ class BookingsListWindow(QWidget):
         self.customer_data()
 
     def customer_data(self):
-        self.tableWidget.setColumnCount(5)
-        self.tableWidget.setHorizontalHeaderLabels(["Customer ID", "Username", "Address", "PNumber", "Email"])
+        self.tableWidget.setColumnCount(7)
+        self.tableWidget.setHorizontalHeaderLabels(["Customer ID", "Username", "Address", "PNumber", "Email", "Password", "CardNo"])
 
         query = QSqlQuery()
-        query.exec('SELECT CustomerID, Username, Address, PNumber, Email FROM Customer')
+        query.exec('SELECT CustomerID, Username, Address, PNumber, Email, Password, CardNo FROM Customer')
 
         row = 0
         while query.next():
             self.tableWidget.insertRow(row)
-            for column in range(5):
+            for column in range(7):
                 item = QTableWidgetItem(str(query.value(column)))
                 self.tableWidget.setItem(row, column, item)
             row += 1
@@ -83,77 +119,89 @@ class StaffMembersWindow(QWidget):
         self.staff_members_data()
 
     def staff_members_data(self):
-        self.tableWidget.setColumnCount(5)
-        self.tableWidget.setHorizontalHeaderLabels(["Staff ID", "Username", "Phone Number", "Email", "Role"])
+        self.tableWidget.setColumnCount(6)
+        self.tableWidget.setHorizontalHeaderLabels(["Staff ID", "Username", "Phone Number", "Email", "Password", "Role"])
 
         query = QSqlQuery()
-        query.exec('SELECT StaffNo, SUsername, SPNumber, SEmail, Role FROM Staff')
+        query.exec('SELECT StaffNo, SUsername, SPNumber, SEmail, SPassword, Role FROM Staff')
 
         row = 0
         while query.next():
             self.tableWidget.insertRow(row)
-            for column in range(5):
+            for column in range(6):
                 item = QTableWidgetItem(str(query.value(column)))
                 self.tableWidget.setItem(row, column, item)
             row += 1
 
-class AssignStaffWindow(QWidget):
+
+class AssignDriversWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Assign Staff to Bookings")
+        self.setWindowTitle("Assign Drivers to Bookings")
         self.resize(600, 400)
 
         layout = QFormLayout()
         self.setLayout(layout)
 
-        self.bookingComboBox = QComboBox()
-        self.staffComboBox = QComboBox()
+        self.bookingLineEdit = QLineEdit()
+        self.driverLineEdit = QLineEdit()
 
-        layout.addRow("Select Booking:", self.bookingComboBox)
-        layout.addRow("Select Staff Member:", self.staffComboBox)
+        layout.addRow("Booking ID:", self.bookingLineEdit)
+        layout.addRow("Driver Info:", self.driverLineEdit)
 
-        assign_button = QPushButton("Assign", clicked=self.assign_staff_to_booking)
+        assign_button = QPushButton("Assign", clicked=self.assign_driver_to_booking)
         layout.addWidget(assign_button)
 
         self.bookings_data()
-        self.staff_members_data()
+        self.drivers_data()
 
-        def bookings_data(self):
-            query = QSqlQuery()
-            query.exec('SELECT BookingID FROM Bookings')
+    def bookings_data(self):
+        query = QSqlQuery()
+        query.exec('SELECT BookingID FROM Bookings')
 
-            while query.next():
-                booking_id = query.value(0)
-                self.bookingComboBox.addItem(str(booking_id))
+        bookings = []
+        while query.next():
+            booking_id = query.value(0)
+            bookings.append(str(booking_id))
 
-        def staff_members_data(self):
-            query = QSqlQuery()
-            query.exec('SELECT StaffNo, SUsername FROM Staff')
+        self.bookingLineEdit.setText(', '.join(bookings))
 
-            while query.next():
-                staff_no = query.value(0)
-                username = query.value(1)
-                self.staffComboBox.addItem(f"{staff_no} - {username}")
+    def drivers_data(self):
+        query = QSqlQuery()
+        query.exec('SELECT StaffNo, SUsername FROM Staff WHERE Role = 1')  # Assuming Role = 1 means taxi driver
 
-        def assign_staff_to_bookings(self):
-            booking_id = self.bookingComboBox.currentText()
-            staff_info = self.staffComboBox.currentText()
-            staff_no = staff_info.split(' - ')[0]
+        drivers = []
+        while query.next():
+            driver_no = query.value(0)
+            username = query.value(1)
+            drivers.append(f"{driver_no} - {username}")
 
-            query = QSqlQuery()
-            query.prepare('''UPDATE Bookings
-                            SET StaffNo = :staff_no
-                            WHERE BookingID = :booking_id''')
+        self.driverLineEdit.setText(', '.join(drivers))
 
-            query.bindValue(':staff_no', staff_no)
-            query.bindValue(':booking_id', booking_id)
+    def assign_driver_to_booking(self):
 
-            if query.exec():
-                QMessageBox.information(self, "Success", "Staff member has been assigned to the booking successfully!")
-            else:
-                error_message = query.lastError().text()
-                QMessageBox.warning(self, "Error", f"Failed to assign staff member to the booking. Error: {error_message}")
+        booking_id = self.bookingLineEdit.text().strip()
+        driver_info = self.driverLineEdit.text().strip()
 
+        if not booking_id or not driver_info:
+            QMessageBox.warning(self, "Input Error", "Please provide both Booking ID and Driver Info.")
+            return
+
+        driver_no = driver_info.split(' - ')[0]
+
+        query = QSqlQuery()
+        query.prepare('''UPDATE Bookings
+                        SET StaffNo = :driver_no
+                        WHERE BookingID = :booking_id''')
+
+        query.bindValue(':driver_no', driver_no)
+        query.bindValue(':booking_id', booking_id)
+
+        if query.exec():
+            QMessageBox.information(self, "Success", "Driver has been assigned to the booking successfully!")
+        else:
+            error_message = query.lastError().text()
+            QMessageBox.warning(self, "Error", f"Failed to assign driver to the booking. Error: {error_message}")
 
 class StaffLoginWindow(QWidget):
     def __init__(self):
@@ -224,36 +272,43 @@ class StaffLoginWindow(QWidget):
         ''')
 
         query.exec('''
-            CREATE TABLE IF NOT EXISTS Bookings (
-                BookingID INTEGER PRIMARY KEY AUTOINCREMENT,
-                CustomerID INTEGER,
-                StaffNo INTEGER,
-                FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
-                FOREIGN KEY (StaffNo) REFERENCES Staff (StaffNo)
-            )
-        ''')
+                CREATE TABLE IF NOT EXISTS Booking (
+                    BookingID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Location TEXT NOT NULL,
+                    Destination TEXT NOT NULL,
+                    PickUpTime TEXT NOT NULL,
+                    ReturnTime TEXT NOT NULL,
+                    NumPassengers INTEGER NOT NULL,
+                    StaffNo INTEGER,
+                    FOREIGN KEY(StaffNo) REFERENCES Staff(StaffNo)
+                )
+            ''')
 
     def check_staff_credential(self):
         username = self.lineEdits['SUsername'].text()
         password = self.lineEdits['SPassword'].text()
 
         query = QSqlQuery()
-        query.prepare('SELECT SPassword FROM Staff WHERE SUsername = :username')
+        query.prepare('SELECT SPassword, Role FROM Staff WHERE SUsername = :username')
         query.bindValue(':username', username)
         query.exec()
 
         if query.next():
             stored_password = query.value(0)
+            role = query.value(1)
             if stored_password == password:
                 time.sleep(1)
-                self.staffMainApp = StaffMainApp(username)
-                self.staffMainApp.show()
+                if role == 1:  # Assuming Role = 1 is for staff
+                    self.staffMainApp = StaffMainApp(username)
+                    self.staffMainApp.show()
+                elif role == 3:  # Assuming Role = 2 is for manager
+                    self.managerMainApp = ManagerMainApp(username)
+                    self.managerMainApp.show()
                 self.close()
             else:
                 self.status.setText('Password is incorrect')
         else:
             self.status.setText('Username not found')
-
 
 class StaffRegisterWindow(QWidget):
     def __init__(self):
