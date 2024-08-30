@@ -127,6 +127,7 @@ class UpdateBookingForm(QWidget):
         self.booking_id = booking_id
 
         layout = QFormLayout()
+
         self.setLayout(layout)
 
         self.lineEdits = {}
